@@ -1,6 +1,6 @@
-# oBundle - Ecommerce Web Developer Test
-## Using BigCommerce 
-___
+# oBundle - BigCommerce Web Developer Test
+
+
 
 ### Link
 Here is the link to the live template in action: https://obundle-test.mybigcommerce.com/special-items/
@@ -8,8 +8,11 @@ Here is the link to the live template in action: https://obundle-test.mybigcomme
 
 ### Overview of Tasks
 1.  Create a product called Special Item which will be assigned to a new category called Special Items. Be sure to add at least 2 images during the product creation.
+    
 2.  The Special Item should be the only item which shows in this category - create a feature that will show the product's second image when it is hovered on. 
 
+
+<strong>Updated code in card.html to implement task 2</strong>
 ```
 // card.html
 
@@ -23,7 +26,6 @@ Here is the link to the live template in action: https://obundle-test.mybigcomme
         data-hoverimage="{{#replace '{:size}' images.1.data}}500x659{{/replace}}{{getImage images.1.data 'productgallery_size' (cdn theme_settings.default_image_product)}}"
     >
 </div> 
-
 
 <script>
 $('.card-figure').hover(
@@ -48,6 +50,8 @@ $('.card-figure').hover(
    
 <em>NOTE: Both buttons should utilize the Storefront API for completion. </em>
 
+
+<strong>Updated code in product-listing.html to implement steps 3 and 4</strong>
 ```
 // product-listing.html
 
