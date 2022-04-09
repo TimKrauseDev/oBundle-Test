@@ -1,6 +1,20 @@
 {{inject 'noCompareMessage' (lang 'compare.no_compare')}}
 
 {{#if category.products}}
+
+
+<div class="button-wrapper">
+    <button class="page-add-all-items" onClick='addAllItemsToCart()'>
+        Add All To Cart 
+    </button>
+
+    <button class="page-remove-all-items display-none" onClick='removeAllItemsInCart()'>
+        Remove All Items
+    </button>
+</div>
+
+
+
     {{> components/products/filter sort=pagination.category.sort}}
 
     <div {{#if settings.data_tag_enabled}} data-list-name="Category: {{category.name}}" {{/if}}>
@@ -33,3 +47,150 @@
         </p>
     {{/if}}
 {{/if}}
+
+
+
+
+
+{{inject "products" category.products}}
+
+<style>
+    .display-none {
+        display: none !important;
+    }
+
+    .button-wrapper {
+        display: flex;
+        justify-content: center;
+    }
+
+    .page-add-all-items,
+    .page-remove-all-items {
+        border: 1px solid #8f8f8f; 
+        border-radius: 4px; 
+        padding: 5px 15px;
+        margin-right: 5px;
+    }
+</style>
+
+<script
+  src="https://code.jquery.com/jquery-3.6.0.min.js"
+  integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+  crossorigin="anonymous">
+</script>
+
+<script>
+
+    $(document).ready(()=> {
+
+        const handleCartHasItem = async () => {
+            let res = await getCart('/api/storefront/carts');
+    
+            if (!res) {
+                $('.page-remove-all-items').addClass('display-none');
+            } else {
+                $('.page-remove-all-items').removeClass('display-none');
+            }
+        }
+    
+        handleCartHasItem();
+    }); 
+
+
+  
+    const addAllItemsToCart = async () => {
+        const jsContext = JSON.parse({{jsContext}});
+        const { products, cartId } = jsContext;
+
+        if (cartId) return;
+
+        let data = {
+            lineItems: products.map(product => ({
+                quantity: 1,
+                productId: product.id
+            }))
+        }
+
+        try {
+            const res = await createCart(data);
+            $('.page-remove-all-items').removeClass('display-none');
+            location.reload();
+            alert('All Items Added');
+        } catch (err) {
+            console.errror(err)
+        }
+      
+    };
+
+    const createCart = async (cartItems) => {
+
+        try {
+            const res = await fetch('/api/storefront/carts', {
+                method: "POST",
+                credentials: "same-origin",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(cartItems),
+            })
+    
+            return await res.json();
+        } catch (err) {
+            console.error(err);
+        }
+    };
+
+    
+    
+    const removeAllItemsInCart = async () => {
+        let productIds = [];
+        
+        const jsContext = JSON.parse({{jsContext}});
+        const { products, cartId } = jsContext;
+
+        if (!cartId) return;
+        
+        try {
+            let res = await getCart('/api/storefront/carts');
+
+            res.lineItems.physicalItems.forEach(lineItem => {
+                productIds.push(lineItem.id)
+            })
+            
+            productIds.forEach(productId => {
+                const res =  deleteCartItem('/api/storefront/carts/', cartId, productId); 
+            })
+            $('.page-remove-all-items').addClass('display-none');
+            location.reload();
+            alert('All Items Removed');
+        } catch (err) {
+            console.error(err);
+            return;
+        }
+
+        
+    }
+    
+    const getCart = async (url) => {
+        const res = await fetch(url, {
+            method: "GET",
+            credentials: "same-origin"
+        })
+        const data = await res.json();
+        return data[0];
+    };
+
+
+    const deleteCartItem = async (url, cartId, itemId) => {
+        return await fetch("/api/storefront/carts/" + cartId + "/items/" + itemId, {
+            method: "DELETE",
+            credentials: "same-origin",
+            headers: {
+                "Content-Type": "application/json",
+            },
+        });
+    };
+  
+
+
+  </script>
