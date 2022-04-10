@@ -3,8 +3,8 @@
 
 
 ### Link
-Here is the link to the live template in action: https://obundle-test.mybigcommerce.com/special-items/
-
+Link to the Special Items page: <strong>https://obundle-test.mybigcommerce.com/special-items/</strong>
+Preview Code: <strong>dcajajdqoi</strong>
 
 ### Overview of Tasks
 1.  Create a product called Special Item which will be assigned to a new category called Special Items. Be sure to add at least 2 images during the product creation.
@@ -55,14 +55,35 @@ $('.card-figure').hover(
 ```
 // product-listing.html
 
+
+// Add Buttons for adding all items
 <div class="button-wrapper">
-    <button class="page-add-all-items" onClick='addAllItemsToCart()'>
+    <button class="page-add-all-items" onClick='addAllItemsToCart()' data-reveal-id="modal-added">
         Add All To Cart 
     </button>
 
-    <button class="page-remove-all-items display-none" onClick='removeAllItemsInCart()'>
+    <button class="page-remove-all-items display-none" onClick='removeAllItemsInCart()' data-reveal-id="modal-removed">
         Remove All Items
     </button>
+</div>
+
+// Simple Modal Popups
+<div id="modal-added" class="modal modal--small" role="alert" data-reveal>
+    <a href="#" class="modal-close" aria-label="{{lang 'common.close'}}" role="button">
+        <span aria-hidden="true">&#215;</span>
+    </a>
+    <div class="modal-content modal-content-custom">
+        <h2>Item(s) Added To Cart</h2>
+    </div>
+</div>
+
+<div id="modal-removed" class="modal modal--small" role="alert" data-reveal>
+    <a href="#" class="modal-close" aria-label="{{lang 'common.close'}}" role="button">
+        <span aria-hidden="true">&#215;</span>
+    </a>
+    <div class="modal-content modal-content-custom">
+        <h2>Item(s) Removed From Cart</h2>
+    </div>   
 </div>
 
 

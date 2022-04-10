@@ -4,11 +4,11 @@
 
 
 <div class="button-wrapper">
-    <button class="page-add-all-items" onClick='addAllItemsToCart()'>
+    <button class="page-add-all-items" onClick='addAllItemsToCart()' data-reveal-id="modal-added">
         Add All To Cart 
     </button>
 
-    <button class="page-remove-all-items display-none" onClick='removeAllItemsInCart()'>
+    <button class="page-remove-all-items display-none" onClick='removeAllItemsInCart()' data-reveal-id="modal-removed">
         Remove All Items
     </button>
 </div>
@@ -49,12 +49,44 @@
 {{/if}}
 
 
+<div id="modal-added" class="modal modal--small" role="alert" data-reveal>
+    <a href="#" class="modal-close" aria-label="{{lang 'common.close'}}" role="button">
+        <span aria-hidden="true">&#215;</span>
+    </a>
+    <div class="modal-content modal-content-custom">
+        <h2>Item(s) Added To Cart</h2>
+    </div>
+</div>
 
+<div id="modal-removed" class="modal modal--small" role="alert" data-reveal>
+    <a href="#" class="modal-close" aria-label="{{lang 'common.close'}}" role="button">
+        <span aria-hidden="true">&#215;</span>
+    </a>
+    <div class="modal-content modal-content-custom">
+        <h2>Item(s) Removed From Cart</h2>
+    </div>   
+</div>
 
 
 {{inject "products" category.products}}
 
 <style>
+
+    #modal-added h2,
+    #modal-removed h2{
+        margin: 0;
+    }
+
+    .modal--small .modal-content-custom {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
     .display-none {
         display: none !important;
     }
@@ -65,7 +97,8 @@
     }
 
     .page-add-all-items,
-    .page-remove-all-items {
+    .page-remove-all-items,
+    .modal-button {
         border: 1px solid #8f8f8f; 
         border-radius: 4px; 
         padding: 5px 15px;
@@ -96,12 +129,13 @@
         handleCartHasItem();
     }); 
 
-
+    
   
     const addAllItemsToCart = async () => {
         const jsContext = JSON.parse({{jsContext}});
         const { products, cartId } = jsContext;
 
+      
         if (cartId) return;
 
         let data = {
@@ -115,7 +149,6 @@
             const res = await createCart(data);
             $('.page-remove-all-items').removeClass('display-none');
             location.reload();
-            alert('All Items Added');
         } catch (err) {
             console.errror(err)
         }
@@ -162,7 +195,6 @@
             })
             $('.page-remove-all-items').addClass('display-none');
             location.reload();
-            alert('All Items Removed');
         } catch (err) {
             console.error(err);
             return;
